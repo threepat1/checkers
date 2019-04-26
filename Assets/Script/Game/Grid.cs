@@ -145,6 +145,13 @@ namespace Checkers
         {
             // Get the selected piece's cell
             Vector2Int startCell = selected.cell;
+            //is desired cell is out of bounds?
+            if (IsOutOfBounds(desiredCell))
+            {
+                MovePiece(selected, startCell);
+                return false;
+            }
+
             // Is this NOT a Valid Move?
             if (!ValidMove(selected, desiredCell))
             {
@@ -161,8 +168,7 @@ namespace Checkers
         }
         void Update()
         {
-            //Temporarily place here
-            DetectForcedMoves();
+
             // Update the mouse over information
             MouseOver();
             // If the mouse is pressed
@@ -231,7 +237,7 @@ namespace Checkers
                 //Is there no forced moves?
                 if(forcedMoves.Count == 0)
                 {
-                    Debug.Log("<color=red>Invalid- you can only move two</color>");
+                    Debug.Log("<color=red>Invalid- you can only move two space if there are forced move</color>");
                     return false;
                 }
             }
@@ -430,19 +436,22 @@ namespace Checkers
             cell.y = (start.y + end.y) / 2;
             return GetPiece(cell);
         }
-        //Tries moving a piece from current(x1+y1) to Desired (x2+y2) coordinates
-        bool Trymove(Piece selected, Vector2Int desiredCell)
+        bool IsPieceTaken(Piece selected)
         {
-            //Get the selected piece's cell
-            Vector2Int startCell = selected.cell;
-            //Is desired cell is out of Bounds;
-            if (IsOutOfBounds(desiredCell))
+            // Get the piece in between move
+            Piece pieceBetween = GetPieceBetween(selected.oldcell, selected.cell);
+            // if there is a piece between and the piece isn't the same colour
+            if(pieceBetween !=null && pieceBetween.isWhite != selected.isWhite)
             {
-                //Move it back to original
-                MovePiece(selected, startCell);
-                Debug.Log("<color=red>Invalid - you cannot move outside of the bounds");
+                // Destroy the piece between
+                RemovePiece(pieceBetween);
+                // piece taken
+                return true;
             }
+            //piece is not taken
+            return false;
         }
+
     }
 
 }
