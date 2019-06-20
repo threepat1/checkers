@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour {
     public bool isWhite, isKing;
-    public Vector2Int cell, oldcell;
+    public Vector2Int cell, oldCell;
 
     private Animator anim;
 	// Use this for initialization
